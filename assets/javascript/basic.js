@@ -1,61 +1,86 @@
 //this is not the simplest solution but i wanted to learn about objects
 
 $(document).ready(function () {
-    var time = 60;
+    var time = 12;
     intervalID = setInterval(counter, 1000);
+    q1 = {
+        qText: "What is the name of the instructor of the 2019 Harvard Coding Bootcamp?",
+        choice1: ["Mark Techson", "false"],
+        choice2: ["Mark Thompson", "true"],
+        choice3: ["Marc Antony", "false"],
+        choice4: ["Marcus Aurelius", "false"]
+    }
+    q2 = {
+        qText: "Question",
+        choice1: ["something", "true"],
+        choice2: ["something", "false"],
+        choice3: ["something", "false"],
+        choice4: ["test", "false"]
+    }
+    q3 = {
+        qText: "Question",
+        choice1: ["something", "false"],
+        choice2: ["something", "false"],
+        choice3: ["something", "false"],
+        choice4: ["this", "true"]
+    }
+    q4 = {
+        qText: "Question",
+        choice1: ["something", "false"],
+        choice2: ["something", "false"],
+        choice3: ["something", "false"],
+        choice4: ["out", "true"]
+    }
+    q5 = {
+        qText: "Question",
+        choice1: ["something", "true"],
+        choice2: ["something", "false"],
+        choice3: ["something", "false"],
+        choice4: ["now", "false"]
+    }
+    var qArray = [q1, q2, q3, q4, q5]
+    var numCorrect = 0
+    var numIncorrect = 0
+    var numTotal = qArray.length
     $("#timeRemaining").html(time);
     function gameFinished() {
-
+        $(".form-check-input").each(function () {
+            if (($(this).is(':checked') === true)) {
+                console.log($(this).attr("answer"))
+                if ($(this).attr("answer") === "true") {
+                    numCorrect++
+                }
+                else if ($(this).attr("answer") === "false") {
+                    numIncorrect++
+                }
+            }
+        })
+        $("#correct").html(numCorrect);
+        $("#incorrect").html(numIncorrect);
+        $("#unanswered").html(numTotal - numCorrect - numIncorrect);
     }
     function counter() {
         time--;
         $("#timeRemaining").html(time);
         if (time === 0) {
             clearInterval(intervalID);
-            $("#gameEnd").toggleClass("off")
-            $("#gameStart").toggleClass("off")
-            gameFinished()
+            $("#gameEnd").toggleClass("off");
+            $("#gameStart").toggleClass("off");
+            gameFinished();
         }
 
     }
-    document.addEventListener('click', document.getElementsByClassName("form-check-input"), function () { console.log(this) })
-    $(document).on("click", $(".form-check-input"), function () { console.log(this) })
-    q1 = {
-        qText: "What is the name of the instructor of the 2019 Harvard Coding Bootcamp?",
-        choice1: ["Mark Techson", false],
-        choice2: ["Mark Thompson", true],
-        choice3: ["Marc Antony", false],
-        choice4: ["Marcus Aurelius", false]
-    }
-    q2 = {
-        qText: "Question",
-        choice1: ["something", true],
-        choice2: ["something", false],
-        choice3: ["something", false],
-        choice4: ["test", false]
-    }
-    q3 = {
-        qText: "Question",
-        choice1: ["something", false],
-        choice2: ["something", false],
-        choice3: ["something", false],
-        choice4: ["this", true]
-    }
-    q4 = {
-        qText: "Question",
-        choice1: ["something", false],
-        choice2: ["something", false],
-        choice3: ["something", false],
-        choice4: ["out", true]
-    }
-    q5 = {
-        qText: "Question",
-        choice1: ["something", true],
-        choice2: ["something", false],
-        choice3: ["something", false],
-        choice4: ["now", false]
-    }
-    var qArray = [q1, q2, q3, q4, q5]
+    //add global event listener to document. function would check if the 
+    // document.addEventListener('click', document.getElementsByClassName("form-check-input"), function () { console.log(this) })
+    $(document).on("click", function (event) {
+        console.log(event.target.className);
+        if (event.target.className === "form-check-input") {
+            clicked = event.target.attributes.answer.nodeValue;
+            console.log(clicked);
+        }
+    })
+
+
 
     function loadQuestion() {
         for (i = 0; i < qArray.length; i++) {
@@ -81,7 +106,7 @@ $(document).ready(function () {
 
                     var choiceHTML = `<div class="form-check form-check-inline">
                      <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio`+ k + `"
-                         value="option`+ k + `">
+                         value="option`+ k + `"answer=${currentQ[j][1]}>
                          <label class="form-check-label" for= "inlineRadio`+ k + `" >` + currentQ[j][0] + `</label >
                  </div > `
                     $(fID).append(choiceHTML)
